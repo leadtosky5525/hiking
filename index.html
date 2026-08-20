@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小黑貓山林日記 | 一起去健行吧</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 使用較圓潤、具手寫感的字體，例如 Nunito 或 圓體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- 引入 Font Awesome 為了圖示 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        // 使用圓體作為主要中文字體，Nunito 作為英文字體
+                        sans: ['Nunito', 'Zen Maru Gothic', 'sans-serif'],
+                        handwriting: ['"Comic Sans MS"', 'cursive', 'Zen Maru Gothic', 'sans-serif'],
+                    },
+                    colors: {
+                        // 擷取自圖片的柔和手繪色彩
+                        crayon: {
+                            green: '#489A6A', // 樹木綠
+                            lightgreen: '#6BC191', // 草地綠
+                            yellow: '#F3C550', // 背包/小鳥黃
+                            darkbrown: '#3B2F2A', // 貓咪深褐
+                            brown: '#8B5A2B', // 樹幹褐
+                            bg: '#FDFBF7', // 畫紙底色
+                            border: '#3B2F2A', // 手繪線條顏色
+                        }
+                    },
+                    boxShadow: {
+                        'sketch': '4px 4px 0px 0px rgba(59, 47, 42, 1)',
+                        'sketch-hover': '6px 6px 0px 0px rgba(59, 47, 42, 1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FDFBF7;
+            background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: #3B2F2A;
+        }
+
+        /* 模擬手繪線條的邊框 */
+        .sketch-border {
+            border: 3px solid #3B2F2A;
+            border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+        }
+        
+        .sketch-border-alt {
+            border: 3px solid #3B2F2A;
+            border-radius: 15px 225px 15px 255px/255px 15px 225px 15px;
+        }
+
+        /* 按鈕互動效果 */
+        .sketch-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .sketch-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px 0px rgba(59, 47, 42, 1);
+        }
+        .sketch-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px rgba(59, 47, 42, 1);
+        }
+
+        /* 標題裝飾 */
+        .title-marker {
+            position: relative;
+            display: inline-block;
+        }
+        .title-marker::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: -5%;
+            width: 110%;
+            height: 12px;
+            background-color: #F3C550;
+            opacity: 0.5;
+            z-index: -1;
+            border-radius: 10px;
+            transform: rotate(-1deg);
+        }
+
+        /* 圖片容器效果 */
+        .photo-frame {
+            background-color: white;
+            padding: 10px 10px 40px 10px;
+            box-shadow: 2px 4px 15px rgba(0,0,0,0.1);
+            transform: rotate(-2deg);
+            transition: transform 0.3s;
+        }
+        .photo-frame:hover {
+            transform: rotate(1deg) scale(1.02);
+            z-index: 10;
+        }
+        .photo-frame-alt {
+            transform: rotate(3deg);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-crayon-yellow selection:text-crayon-darkbrown">
+
+    <nav class="fixed w-full z-50 transition-all duration-300 py-4 bg-crayon-bg/90 backdrop-blur-sm border-b-2 border-crayon-border border-dashed" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <!-- Logo (文字模擬手寫) -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="text-2xl font-bold font-handwriting text-crayon-darkbrown flex items-center gap-2">
+                        <i class="fa-solid fa-paw text-crayon-yellow text-xl"></i>
+                        小黑貓山林日記
+                    </a>
+                </div>
+                
+                <!-- 電腦版選單 -->
+                <div class="hidden md:flex space-x-6 items-center font-bold">
+                    <a href="#about" class="text-crayon-darkbrown hover:text-crayon-green transition-colors px-3 py-2 text-lg relative group">
+                        寫在前面
+                        <span class="absolute bottom-0 left-0 w-0 h-1 bg-crayon-lightgreen transition-all group-hover:w-full rounded-full"></span>
+                    </a>
+                    <a href="#tours" class="text-crayon-darkbrown hover:text-crayon-green transition-colors px-3 py-2 text-lg relative group">
+                        探險路線
+                        <span class="absolute bottom-0 left-0 w-0 h-1 bg-crayon-lightgreen transition-all group-hover:w-full rounded-full"></span>
+                    </a>
+                    <a href="#equipment" class="text-crayon-darkbrown hover:text-crayon-green transition-colors px-3 py-2 text-lg relative group">
+                        行囊準備
+                        <span class="absolute bottom-0 left-0 w-0 h-1 bg-crayon-lightgreen transition-all group-hover:w-full rounded-full"></span>
+                    </a>
+                    <a href="#booking" class="bg-crayon-yellow text-crayon-darkbrown border-2 border-crayon-border px-5 py-2 text-lg rounded-xl shadow-sketch sketch-btn font-handwriting ml-4">
+                        跟著我走！
+                    </a>
+                </div>
+
+                <!-- 手機版選單按鈕 -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-crayon-darkbrown focus:outline-none p-2 bg-white sketch-border">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="hidden md:hidden bg-crayon-bg shadow-sketch absolute w-[90%] left-[5%] top-20 sketch-border mt-2 z-50">
+            <div class="px-4 pt-2 pb-4 space-y-2 flex flex-col font-bold">
+                <a href="#about" class="text-crayon-darkbrown hover:bg-crayon-yellow/30 block px-3 py-3 rounded-lg text-lg border-b border-crayon-border/20 border-dashed">寫在前面</a>
+                <a href="#tours" class="text-crayon-darkbrown hover:bg-crayon-yellow/30 block px-3 py-3 rounded-lg text-lg border-b border-crayon-border/20 border-dashed">探險路線</a>
+                <a href="#equipment" class="text-crayon-darkbrown hover:bg-crayon-yellow/30 block px-3 py-3 rounded-lg text-lg border-b border-crayon-border/20 border-dashed">行囊準備</a>
+                <a href="#booking" class="bg-crayon-yellow text-crayon-darkbrown border-2 border-crayon-border block px-3 py-3 rounded-xl text-lg mt-4 text-center shadow-[2px_2px_0px_0px_rgba(59,47,42,1)] active:translate-y-1 active:shadow-none font-handwriting">跟著我走！</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden">
+        <!-- 裝飾元素：模擬圖片中的元素 image_8aa041.png -->
+        <div class="absolute top-1/4 left-10 md:left-32 text-6xl opacity-80 animate-bounce" style="animation-duration: 3s;"><i class="fa-solid fa-dove text-crayon-yellow"></i></div>
+        <div class="absolute bottom-1/4 right-10 md:right-32 text-8xl opacity-70"><i class="fa-solid fa-tree text-crayon-green"></i></div>
+        <div class="absolute top-1/3 right-20 text-4xl opacity-60"><i class="fa-solid fa-cloud text-gray-300"></i></div>
+        <div class="absolute bottom-32 left-20 text-5xl opacity-80"><i class="fa-solid fa-seedling text-crayon-lightgreen"></i></div>
+
+        <div class="text-center px-4 max-w-4xl mx-auto z-10">
+            <div class="mb-8 inline-block relative">
+                <!-- 模擬圖片中的山和 HIKE 字樣 -->
+                <i class="fa-solid fa-mountain text-8xl text-crayon-border block mb-2"></i>
+                <span class="font-handwriting text-4xl font-black text-crayon-darkbrown tracking-widest absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/4 bg-crayon-bg px-2">HIKE</span>
+                <div class="h-4 w-32 bg-crayon-lightgreen mx-auto rounded-full mt-2 opacity-80"></div>
+            </div>
+
+            <h1 class="text-4xl md:text-6xl font-black text-crayon-darkbrown mb-6 leading-tight font-handwriting">
+                背上黃色小背包，<br />
+                <span class="title-marker">我們一起去爬山！</span>
+            </h1>
+            <p class="text-xl text-crayon-darkbrown/80 mb-10 max-w-2xl mx-auto font-bold border-2 border-dashed border-crayon-border p-6 rounded-2xl bg-white/50 backdrop-blur-sm sketch-border-alt">
+                用腳步紀錄風景，用畫筆留下回憶。<br>
+                跟著小黑貓的足跡，探索森林裡的秘密基地。
+            </p>
+            
+            <a href="#tours" class="inline-block bg-crayon-green text-white border-2 border-crayon-border px-8 py-4 rounded-2xl text-xl font-bold shadow-sketch sketch-btn font-handwriting">
+                <i class="fa-solid fa-map text-crayon-yellow mr-2"></i> 打開探險地圖
+            </a>
+        </div>
+    </header>
+
+    <section id="about" class="py-20 relative">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white border-2 border-crayon-border p-8 md:p-12 shadow-sketch sketch-border relative">
+                <!-- 日記本扣環裝飾 -->
+                <div class="absolute -left-3 top-10 w-6 h-6 border-2 border-crayon-border rounded-full bg-gray-200"></div>
+                <div class="absolute -left-3 top-32 w-6 h-6 border-2 border-crayon-border rounded-full bg-gray-200"></div>
+                <div class="absolute -left-3 top-54 w-6 h-6 border-2 border-crayon-border rounded-full bg-gray-200"></div>
+                
+                <!-- 紙膠帶裝飾 -->
+                <div class="absolute -top-4 right-10 w-24 h-8 bg-crayon-yellow/50 transform rotate-3"></div>
+
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
+                    <div class="md:col-span-3">
+                        <p class="font-handwriting text-crayon-brown mb-2 text-lg"><i class="fa-regular fa-calendar"></i> 2026年，晴天</p>
+                        <h2 class="text-3xl md:text-4xl font-bold text-crayon-darkbrown mb-6 font-handwriting">
+                            關於這本 <span class="text-crayon-green">山林日記</span>
+                        </h2>
+                        
+                        <div class="space-y-4 text-lg text-crayon-darkbrown/90 leading-relaxed font-medium">
+                            <p>
+                                嗨！我是喜歡戴著頭巾、揹著黃色背包的小黑貓。
+                            </p>
+                            <p>
+                                以前總覺得山好高好遠，直到第一次踏上落葉鋪成的步道，聞到泥土和青草的香味，我才知道原來森林這麼好玩！
+                            </p>
+                            <p>
+                                這裡記錄了我走過的路線。有時候會看見蹦蹦跳跳的小鳥，有時候會發現奇怪形狀的樹葉。我想把這些有趣的故事，分享給也想出門走走的你。
+                            </p>
+                        </div>
+
+                        <div class="mt-8 flex flex-wrap gap-4">
+                            <span class="px-4 py-2 bg-crayon-lightgreen/20 border-2 border-crayon-green text-crayon-green font-bold rounded-full sketch-border-alt text-sm">
+                                <i class="fa-solid fa-leaf"></i> 慢慢走不著急
+                            </span>
+                            <span class="px-4 py-2 bg-crayon-yellow/20 border-2 border-crayon-yellow text-yellow-700 font-bold rounded-full sketch-border text-sm">
+                                <i class="fa-solid fa-camera"></i> 看到漂亮風景就停下來
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="md:col-span-2 relative">
+                        <!-- 照片風格的圖片 image_8aa041.png 的意象 -->
+                        <div class="photo-frame sketch-border bg-white p-3">
+                            <div class="aspect-square bg-crayon-bg border-2 border-dashed border-crayon-border flex items-center justify-center overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1542332213-9b5a5a3fad35?auto=format&fit=crop&w=400&q=80" alt="森林步道" class="w-full h-full object-cover rounded">
+                            </div>
+                            <p class="text-center font-handwriting text-crayon-darkbrown mt-4 text-xl">第一次在山裡迷路(誤)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tours" class="py-20 bg-crayon-lightgreen/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-black text-crayon-darkbrown mb-4 font-handwriting title-marker inline-block">
+                    小黑貓的探險路線
+                </h2>
+                <p class="text-xl text-crayon-darkbrown/70 font-bold mt-4">挑選一個喜歡的地方，我們週末出發！</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                
+                <!-- 路線 1 -->
+                <div class="bg-white p-4 sketch-border shadow-sketch hover:-translate-y-2 transition-transform duration-300 relative">
+                    <!-- 標籤 -->
+                    <div class="absolute -top-3 -right-3 bg-crayon-yellow border-2 border-crayon-border text-crayon-darkbrown font-bold px-4 py-1 transform rotate-6 z-10 font-handwriting sketch-border-alt">
+                        新手友善🌟
+                    </div>
+                    
+                    <div class="border-2 border-crayon-border rounded-xl overflow-hidden mb-4 relative h-48">
+                        <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=600&q=80" alt="陽明山" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-crayon-darkbrown mb-2 font-handwriting border-b-2 border-dashed border-crayon-border/50 pb-2">
+                        魔法森林・擎天崗尋牛記
+                    </h3>
+                    
+                    <div class="flex items-center text-crayon-brown font-bold mb-4 gap-4 text-sm mt-2">
+                        <span><i class="fa-regular fa-clock"></i> 半天行程</span>
+                        <span><i class="fa-solid fa-shoe-prints text-crayon-lightgreen"></i> 散步等級</span>
+                    </div>
+                    
+                    <p class="text-crayon-darkbrown/80 mb-6 font-medium line-clamp-3">
+                        這裡的草地又平又軟，最適合躺著曬太陽！運氣好的話，還會遇到正在吃草的牛牛朋友們。步道平緩，穿球鞋就可以來玩喔！
+                    </p>
+                    
+                    <button onclick="document.getElementById('booking').scrollIntoView();" class="w-full bg-white text-crayon-darkbrown border-2 border-crayon-border px-4 py-2 rounded-xl font-bold shadow-[2px_2px_0px_0px_rgba(59,47,42,1)] hover:bg-crayon-lightgreen/20 active:translate-y-1 active:shadow-none transition-all">
+                        想去這裡！
+                    </button>
+                </div>
+
+                <!-- 路線 2 -->
+                <div class="bg-white p-4 sketch-border-alt shadow-sketch hover:-translate-y-2 transition-transform duration-300 relative">
+                    <!-- 標籤 -->
+                    <div class="absolute -top-3 -left-3 bg-crayon-green border-2 border-crayon-border text-white font-bold px-4 py-1 transform -rotate-3 z-10 font-handwriting sketch-border">
+                        稍微挑戰💪
+                    </div>
+                    
+                    <div class="border-2 border-crayon-border rounded-xl overflow-hidden mb-4 relative h-48">
+                        <img src="https://images.unsplash.com/photo-1596489370008-012b186b8849?auto=format&fit=crop&w=600&q=80" alt="合歡山" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-crayon-darkbrown mb-2 font-handwriting border-b-2 border-dashed border-crayon-border/50 pb-2">
+                        雲端漫步・合歡小奇萊
+                    </h3>
+                    
+                    <div class="flex items-center text-crayon-brown font-bold mb-4 gap-4 text-sm mt-2">
+                        <span><i class="fa-regular fa-clock"></i> 一日來回</span>
+                        <span><i class="fa-solid fa-shoe-prints text-crayon-yellow"></i> 會流點汗</span>
+                    </div>
+                    
+                    <p class="text-crayon-darkbrown/80 mb-6 font-medium line-clamp-3">
+                        走進像抹茶冰淇淋一樣的草原，風景超級遼闊！雖然走起來會有一點點喘，但是看到像棉花糖一樣的雲海，就覺得一切都值得啦。
+                    </p>
+                    
+                    <button onclick="document.getElementById('booking').scrollIntoView();" class="w-full bg-white text-crayon-darkbrown border-2 border-crayon-border px-4 py-2 rounded-xl font-bold shadow-[2px_2px_0px_0px_rgba(59,47,42,1)] hover:bg-crayon-lightgreen/20 active:translate-y-1 active:shadow-none transition-all">
+                        想去這裡！
+                    </button>
+                </div>
+
+                <!-- 路線 3 -->
+                <div class="bg-white p-4 sketch-border shadow-sketch hover:-translate-y-2 transition-transform duration-300 relative md:col-span-2 lg:col-span-1">
+                    <!-- 標籤 -->
+                    <div class="absolute -top-4 right-10 bg-red-400 border-2 border-crayon-border text-white font-bold px-4 py-1 transform rotate-2 z-10 font-handwriting sketch-border-alt">
+                        大冒險🔥
+                    </div>
+                    
+                    <div class="border-2 border-crayon-border rounded-xl overflow-hidden mb-4 relative h-48">
+                        <img src="https://images.unsplash.com/photo-1522199670076-2852f80289c3?auto=format&fit=crop&w=600&q=80" alt="高山" class="w-full h-full object-cover">
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-crayon-darkbrown mb-2 font-handwriting border-b-2 border-dashed border-crayon-border/50 pb-2">
+                        星空夜宿・嘉明湖找外星人
+                    </h3>
+                    
+                    <div class="flex items-center text-crayon-brown font-bold mb-4 gap-4 text-sm mt-2">
+                        <span><i class="fa-regular fa-clock"></i> 3天2夜</span>
+                        <span><i class="fa-solid fa-shoe-prints text-red-500"></i> 需要練體力</span>
+                    </div>
+                    
+                    <p class="text-crayon-darkbrown/80 mb-6 font-medium line-clamp-3">
+                        要背大背包在山裡睡兩個晚上喔！雖然很辛苦，但晚上可以看到滿天的星星，白天會看到像藍寶石一樣的湖泊。適合準備好迎接挑戰的你！
+                    </p>
+                    
+                    <button onclick="document.getElementById('booking').scrollIntoView();" class="w-full bg-white text-crayon-darkbrown border-2 border-crayon-border px-4 py-2 rounded-xl font-bold shadow-[2px_2px_0px_0px_rgba(59,47,42,1)] hover:bg-crayon-lightgreen/20 active:translate-y-1 active:shadow-none transition-all">
+                        想去這裡！
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="equipment" class="py-24 relative overflow-hidden bg-white">
+        <!-- 裝飾背景：模擬筆記本的橫線 -->
+        <div class="absolute inset-0 z-0 pointer-events-none" style="background-image: repeating-linear-gradient(transparent, transparent 31px, #e5e5e5 31px, #e5e5e5 32px); background-size: 100% 32px;"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center mb-12 bg-white/80 backdrop-blur-sm p-4 inline-block mx-auto rounded-xl sketch-border transform -rotate-1">
+                <h2 class="text-3xl md:text-4xl font-bold text-crayon-darkbrown font-handwriting">
+                    🎒 出發前，背包裡要裝什麼？
+                </h2>
+            </div>
+
+            <div class="bg-crayon-yellow/10 border-2 border-crayon-border p-8 rounded-2xl sketch-border-alt shadow-sketch relative">
+                <!-- 迴紋針裝飾 -->
+                <div class="absolute -top-6 right-20 text-5xl text-gray-400 transform rotate-45"><i class="fa-solid fa-paperclip"></i></div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 font-bold text-lg text-crayon-darkbrown">
+                    
+                    <!-- 項目清單 1 -->
+                    <div>
+                        <h3 class="text-xl font-black mb-4 font-handwriting border-b-2 border-crayon-border inline-block pb-1">
+                            <i class="fa-solid fa-shirt text-crayon-green"></i> 穿在身上的
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start cursor-pointer group" onclick="this.querySelector('.check-box').classList.toggle('text-crayon-green'); this.querySelector('.check-box').classList.toggle('text-white');">
+                                <span class="check-box w-6 h-6 border-2 border-crayon-border rounded flex-shrink-0 mt-1 mr-3 bg-white text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-check text-sm"></i>
+                                </span>
+                                <span>排汗衣 (千萬別穿純棉的喔，流汗吹風會感冒)</span>
+                            </li>
+                            <li class="flex items-start cursor-pointer group" onclick="this.querySelector('.check-box').classList.toggle('text-crayon-green'); this.querySelector('.check-box').classList.toggle('text-white');">
+                                <span class="check-box w-6 h-6 border-2 border-crayon-border rounded flex-shrink-0 mt-1 mr-3 bg-white text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-check text-sm"></i>
+                                </span>
+                                <span>防風防雨的外套 (山上天氣像變臉一樣快)</span>
+                            </li>
+                            <li class="flex items-start cursor-pointer group" onclick="this.querySelector('.check-box').classList.toggle('text-crayon-green'); this.querySelector('.check-box').classList.toggle('text-white');">
+                                <span class="check-box w-6 h-6 border-2 border-crayon-border rounded flex-shrink-0 mt-1 mr-3 bg-white text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-check text-sm"></i>
+                                </span>
+                                <span>好穿的運動鞋或登山鞋</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 項目清單 2 -->
+                    <div>
+                        <h3 class="text-xl font-black mb-4 font-handwriting border-b-2 border-crayon-border inline-block pb-1">
+                            <i class="fa-solid fa-apple-whole text-red-400"></i> 放進背包的
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start cursor-pointer group" onclick="this.querySelector('.check-box').classList.toggle('text-crayon-green'); this.querySelector('.check-box').classList.toggle('text-white');">
+                                <span class="check-box w-6 h-6 border-2 border-crayon-border rounded flex-shrink-0 mt-1 mr-3 bg-white text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-check text-sm"></i>
+                                </span>
+                                <span>水壺 (至少要帶 1000cc 喔！)</span>
+                            </li>
+                            <li class="flex items-start cursor-pointer group" onclick="this.querySelector('.check-box').classList.toggle('text-crayon-green'); this.querySelector('.check-box').classList.toggle('text-white');">
+                                <span class="check-box w-6 h-6 border-2 border-crayon-border rounded flex-shrink-0 mt-1 mr-3 bg-white text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-check text-sm"></i>
+                                </span>
+                                <span>小零食 (走累了吃顆糖果會很開心)</span>
+                            </li>
+                            <li class="flex items-start cursor-pointer group" onclick="this.querySelector('.check-box').classList.toggle('text-crayon-green'); this.querySelector('.check-box').classList.toggle('text-white');">
+                                <span class="check-box w-6 h-6 border-2 border-crayon-border rounded flex-shrink-0 mt-1 mr-3 bg-white text-white flex items-center justify-center transition-colors">
+                                    <i class="fa-solid fa-check text-sm"></i>
+                                </span>
+                                <span>垃圾袋 (把自己的垃圾帶下山，做個乖寶寶)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                </div>
+                
+                <div class="mt-8 text-center text-sm font-bold text-crayon-brown bg-white border-2 border-dashed border-crayon-border p-3 rounded-xl sketch-border-alt">
+                    <i class="fa-solid fa-lightbulb text-crayon-yellow"></i> 點擊框框可以打勾確認喔！
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="booking" class="py-24 bg-crayon-bg relative">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- 信封造型外框 -->
+            <div class="bg-white border-4 border-crayon-border rounded-lg shadow-sketch relative overflow-hidden">
+                <!-- 信封紅藍邊框裝飾 -->
+                <div class="absolute top-0 left-0 w-full h-3 flex">
+                    <div class="w-1/6 h-full bg-red-400"></div>
+                    <div class="w-1/6 h-full bg-white"></div>
+                    <div class="w-1/6 h-full bg-blue-400"></div>
+                    <div class="w-1/6 h-full bg-white"></div>
+                    <div class="w-1/6 h-full bg-red-400"></div>
+                    <div class="w-1/6 h-full bg-white"></div>
+                </div>
+
+                <div class="p-8 sm:p-12 mt-4">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-crayon-darkbrown font-handwriting mb-2">寫信給小黑貓</h2>
+                        <p class="text-crayon-brown font-bold font-handwriting">告訴我想去哪裡探險吧！</p>
+                    </div>
+                    
+                    <form id="bookingForm" class="space-y-6 font-bold text-crayon-darkbrown">
+                        
+                        <div class="space-y-4">
+                            <!-- 像填字遊戲一樣的表單欄位 -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 border-b-2 border-dashed border-crayon-border pb-2">
+                                <label for="name" class="whitespace-nowrap w-24">我的名字是：</label>
+                                <input type="text" id="name" required class="flex-grow bg-transparent border-none focus:ring-0 text-xl font-handwriting text-crayon-green placeholder-gray-300" placeholder="你的名字">
+                            </div>
+                            
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 border-b-2 border-dashed border-crayon-border pb-2">
+                                <label for="phone" class="whitespace-nowrap w-24">打電話給我：</label>
+                                <input type="tel" id="phone" required class="flex-grow bg-transparent border-none focus:ring-0 text-xl font-handwriting text-crayon-green placeholder-gray-300" placeholder="09XX-XXX-XXX">
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2 border-b-2 border-dashed border-crayon-border pb-2">
+                                <label for="tour" class="whitespace-nowrap w-24">我想去：</label>
+                                <select id="tour" required class="flex-grow bg-transparent border-none focus:ring-0 text-xl font-handwriting text-crayon-green cursor-pointer">
+                                    <option value="" disabled selected class="text-gray-300">選一個地方</option>
+                                    <option value="yangming">擎天崗尋牛記</option>
+                                    <option value="hehuan">合歡小奇萊</option>
+                                    <option value="jiaming">嘉明湖找外星人</option>
+                                </select>
+                            </div>
+
+                            <div class="flex flex-col gap-2 pt-4">
+                                <label for="message">還有想說的話：</label>
+                                <textarea id="message" rows="3" class="w-full bg-crayon-yellow/10 border-2 border-crayon-border rounded-xl p-3 focus:ring-2 focus:ring-crayon-green focus:border-crayon-green transition-colors font-handwriting text-lg sketch-border" placeholder="例如：我好怕蟲蟲、我不吃青椒..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- 提交按鈕 郵票造型 -->
+                        <div class="mt-8 text-right relative">
+                            <button type="submit" class="inline-flex items-center justify-center px-8 py-3 bg-crayon-red text-crayon-darkbrown border-2 border-crayon-border font-bold text-xl rounded-sm hover:bg-red-50 focus:outline-none transition-all shadow-sketch sketch-btn font-handwriting relative overflow-hidden" style="background-color: #ffb3ba;">
+                                <!-- 郵票齒孔邊緣模擬 -->
+                                <div class="absolute inset-0 pointer-events-none" style="border: 4px dotted white; margin: -2px;"></div>
+                                <i class="fa-regular fa-paper-plane mr-2"></i> 寄出報名表！
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- 提交成功訊息 -->
+                    <div id="successMessage" class="hidden mt-8 p-6 bg-crayon-lightgreen/20 border-2 border-crayon-green rounded-xl sketch-border text-center">
+                        <div class="text-4xl mb-2">😺</div>
+                        <h3 class="text-xl font-bold text-crayon-darkbrown font-handwriting mb-2">收到你的信啦！</h3>
+                        <p class="text-crayon-darkbrown/80 font-bold">我會趕快準備好背包，然後聯絡你確認時間喔！</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-crayon-darkbrown text-crayon-bg py-12 border-t-4 border-crayon-border border-dashed relative">
+        <!-- 頂部波浪裝飾 (SVG) -->
+        <div class="absolute top-0 left-0 w-full overflow-hidden leading-none transform -translate-y-full">
+            <svg class="relative block w-full h-[30px]" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V95.8C59.71,118.08,130.83,123.15,192,107.5,237.9,96.42,280.9,74.5,321.39,56.44Z" class="fill-crayon-darkbrown"></path>
+            </svg>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-b border-crayon-bg/20 pb-8 mb-8">
+                <div>
+                    <a href="#" class="text-2xl font-bold font-handwriting text-crayon-yellow flex items-center gap-2 mb-4">
+                        <i class="fa-solid fa-paw"></i>
+                        小黑貓山林日記
+                    </a>
+                    <p class="text-crayon-bg/80 font-medium max-w-sm">
+                        跟著小黑貓的腳步，一起在山林裡探險、野餐、交朋友！
+                    </p>
+                </div>
+                
+                <div class="flex gap-4 md:justify-end">
+                    <a href="#" class="w-12 h-12 rounded-full bg-crayon-bg text-crayon-darkbrown flex items-center justify-center text-xl hover:bg-crayon-yellow transition-colors border-2 border-transparent hover:border-crayon-border sketch-border"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="w-12 h-12 rounded-full bg-crayon-bg text-crayon-darkbrown flex items-center justify-center text-xl hover:bg-crayon-yellow transition-colors border-2 border-transparent hover:border-crayon-border sketch-border"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="w-12 h-12 rounded-full bg-crayon-bg text-crayon-darkbrown flex items-center justify-center text-xl hover:bg-crayon-yellow transition-colors border-2 border-transparent hover:border-crayon-border sketch-border"><i class="fa-brands fa-line"></i></a>
+                </div>
+            </div>
+            
+            <div class="text-center font-handwriting text-crayon-bg/60">
+                <p>&copy; 2026 小黑貓的秘密基地. 請勿亂丟垃圾.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 導覽列滾動效果
+            const navbar = document.getElementById('navbar');
+            
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('bg-white', 'shadow-sm');
+                    navbar.classList.remove('bg-crayon-bg/90', 'backdrop-blur-sm');
+                } else {
+                    navbar.classList.remove('bg-white', 'shadow-sm');
+                    navbar.classList.add('bg-crayon-bg/90', 'backdrop-blur-sm');
+                }
+            });
+
+            // 手機版選單切換
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const mobileLinks = mobileMenu.querySelectorAll('a');
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            // 表單送出處理 (模擬)
+            const bookingForm = document.getElementById('bookingForm');
+            const successMessage = document.getElementById('successMessage');
+
+            bookingForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const submitBtn = bookingForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fa-solid fa-paw fa-bounce mr-2"></i> 蓋貓爪印中...';
+                submitBtn.disabled = true;
+
+                setTimeout(() => {
+                    bookingForm.style.display = 'none'; // 隱藏表單
+                    successMessage.classList.remove('hidden'); // 顯示成功訊息
+                    
+                    // 幾秒後復原，方便重複測試
+                    setTimeout(() => {
+                        bookingForm.reset();
+                        bookingForm.style.display = 'block';
+                        successMessage.classList.add('hidden');
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }, 6000);
+                }, 1500);
+            });
+        });
+    </script>
+</body>
+</html>
